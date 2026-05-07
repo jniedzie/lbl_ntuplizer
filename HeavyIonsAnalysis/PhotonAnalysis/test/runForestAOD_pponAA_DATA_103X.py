@@ -7,6 +7,7 @@
 cleanJets = False
 
 import FWCore.ParameterSet.Config as cms
+
 process = cms.Process('HiForest')
 
 ###############################################################################
@@ -16,36 +17,29 @@ process = cms.Process('HiForest')
 process.load("HeavyIonsAnalysis.JetAnalysis.HiForest_cff")
 process.HiForest.inputLines = cms.vstring("HiForest 103X")
 import subprocess, os
+
 version = ''
 # version = subprocess.check_output(['git',
 #     '-C', os.path.expandvars('$CMSSW_BASE/src'), 'describe', '--tags'])
 if version == '':
-    version = 'no git info'
+  version = 'no git info'
 process.HiForest.HiForestVersion = cms.string(version)
 
 ###############################################################################
 # Input source
 ###############################################################################
 
-process.source = cms.Source("PoolSource",
-    duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
-    fileNames = cms.untracked.vstring(
-
-        #"file:/afs/cern.ch/work/r/rbi/public/forest/HIHardProbes_HIRun2018A-PromptReco-v2_AOD.root"
-        # "file:/eos/cms/store/group/phys_diffraction/lbyl_2018/B3B60266-96AA-A146-8658-4FE0F40F9D00.root"
-        #"/store/hidata/HIRun2018A/HIEmptyBX/AOD/27Feb2019-v1/110000/63642B26-DA82-934B-A025-2520A60462B4.root"
-        "/store/hidata/HIRun2018A/HIForward/AOD/ForLByL-v2/20000/01705C8F-2F1C-834A-A483-6DB03849ADD4.root"
-        # "file:/eos/cms/store/hidata/HIRun2018A/HIEmptyBX/AOD/27Feb2019-v1/110000/450F2ABE-73C8-DC41-A53E-A2AFB5993430.root"
-        # 'file:B3B60266-96AA-A146-8658-4FE0F40F9D00.root'
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/from_old_1034_repo/step3_RAW2DIGI_L1Reco_RECO.root"
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/from_old_1034_repo/wo_lbyl_mod/step3_RAW2DIGI_L1Reco_RECO.root"
-),
-    )
+process.source = cms.Source(
+  "PoolSource",
+  duplicateCheckMode=cms.untracked.string("noDuplicateCheck"),
+  fileNames=cms.untracked.vstring(
+    "/store/hidata/HIRun2018A/HIForward/AOD/ForLByL-v2/20000/01705C8F-2F1C-834A-A483-6DB03849ADD4.root"
+    # "/store/hidata/HIRun2018A/HIMinimumBias0/AOD/04Apr2019-v1/10000/08F998FA-4AF0-9443-90F8-4FDFCDBB1C18.root"
+  ),
+)
 
 # Number of events we want to process, -1 = all events
-process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
-    )
+process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(100))
 
 ###############################################################################
 # Load Global Tag, Geometry, etc.
@@ -66,12 +60,13 @@ process.HiForest.GlobalTagLabel = process.GlobalTag.globaltag
 print('\n\033[31m~*~ USING CENTRALITY TABLE FOR PbPb 2018 DATA ~*~\033[0m\n')
 process.GlobalTag.snapshotTime = cms.string("9999-12-31 23:59:59.000")
 process.GlobalTag.toGet.extend([
-    cms.PSet(record = cms.string("HeavyIonRcd"),
-        tag = cms.string("CentralityTable_HFtowers200_DataPbPb_periHYDJETshape_run2v1031x02_offline"),
-        connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
-        label = cms.untracked.string("HFtowers")
-        ),
-    ])
+  cms.PSet(
+    record=cms.string("HeavyIonRcd"),
+    tag=cms.string("CentralityTable_HFtowers200_DataPbPb_periHYDJETshape_run2v1031x02_offline"),
+    connect=cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+    label=cms.untracked.string("HFtowers")
+  ),
+])
 
 process.load("RecoHI.HiCentralityAlgos.CentralityBin_cfi")
 process.centralityBin.Centrality = cms.InputTag("hiCentrality")
@@ -81,9 +76,12 @@ process.centralityBin.centralityVariable = cms.string("HFtowers")
 # Define tree output
 ###############################################################################
 
-process.TFileService = cms.Service("TFileService",
-    #fileName = cms.string("data_HiForestAOD_wohlt_eta2p3_norechit.root"))
-    fileName = cms.string("data_HiForwardAOD.root"))
+process.TFileService = cms.Service(
+  "TFileService",
+  #fileName = cms.string("data_HiForestAOD_wohlt_eta2p3_norechit.root"))
+  fileName=cms.string("data_HiForwardAOD.root")
+  # fileName = cms.string("data_HuMinimumBiasAOD.root")
+)
 
 ###############################################################################
 # Additional Reconstruction and Analysis: Main Body
@@ -97,9 +95,10 @@ process.TFileService = cms.Service("TFileService",
 
 process.load('HeavyIonsAnalysis.JetAnalysis.hiFJRhoAnalyzer_cff')
 process.load("HeavyIonsAnalysis.JetAnalysis.pfcandAnalyzer_cfi")
-process.pfcandAnalyzer.doTrackMatching  = cms.bool(True)
+process.pfcandAnalyzer.doTrackMatching = cms.bool(True)
 
 from HeavyIonsAnalysis.Configuration.CommonFunctions_cff import overrideJEC_DATA_PbPb5020_2018
+
 process = overrideJEC_DATA_PbPb5020_2018(process)
 
 ###############################################################################
@@ -114,6 +113,7 @@ process.load('HeavyIonsAnalysis.EventAnalysis.hltobject_cfi')
 process.load('HeavyIonsAnalysis.EventAnalysis.l1object_cfi')
 
 from HeavyIonsAnalysis.EventAnalysis.hltobject_cfi import trigger_list_data
+
 process.hltobject.triggerNames = trigger_list_data
 
 ###############################################################################
@@ -151,20 +151,19 @@ process.load('RecoBTag.CSVscikit.csvscikitTagJetTags_cfi')
 process.load('RecoBTag.CSVscikit.csvscikitTaggerProducer_cfi')
 process.akPu4PFCombinedSecondaryVertexV2BJetTags = process.pfCSVscikitJetTags.clone()
 process.akPu4PFCombinedSecondaryVertexV2BJetTags.tagInfos = cms.VInputTag(
-    cms.InputTag("akPu4PFImpactParameterTagInfos"),
-    cms.InputTag("akPu4PFSecondaryVertexTagInfos"))
+  cms.InputTag("akPu4PFImpactParameterTagInfos"), cms.InputTag("akPu4PFSecondaryVertexTagInfos")
+)
 process.akCs4PFCombinedSecondaryVertexV2BJetTags = process.pfCSVscikitJetTags.clone()
 process.akCs4PFCombinedSecondaryVertexV2BJetTags.tagInfos = cms.VInputTag(
-    cms.InputTag("akCs4PFImpactParameterTagInfos"),
-    cms.InputTag("akCs4PFSecondaryVertexTagInfos"))
+  cms.InputTag("akCs4PFImpactParameterTagInfos"), cms.InputTag("akCs4PFSecondaryVertexTagInfos")
+)
 process.akPu4CaloCombinedSecondaryVertexV2BJetTags = process.pfCSVscikitJetTags.clone()
 process.akPu4CaloCombinedSecondaryVertexV2BJetTags.tagInfos = cms.VInputTag(
-    cms.InputTag("akPu4CaloImpactParameterTagInfos"),
-    cms.InputTag("akPu4CaloSecondaryVertexTagInfos"))
+  cms.InputTag("akPu4CaloImpactParameterTagInfos"), cms.InputTag("akPu4CaloSecondaryVertexTagInfos")
+)
 
 # trained on CS jets
-process.CSVscikitTags.weightFile = cms.FileInPath(
-    'HeavyIonsAnalysis/JetAnalysis/data/TMVA_Btag_CsJets_PbPb2018_BDTG.weights.xml')
+process.CSVscikitTags.weightFile = cms.FileInPath('HeavyIonsAnalysis/JetAnalysis/data/TMVA_Btag_CsJets_PbPb2018_BDTG.weights.xml')
 
 ###############################################################################
 
@@ -188,9 +187,9 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 # clean bad PF candidates
 if cleanJets:
-    process.load("RecoHI.HiJetAlgos.HiBadParticleFilter_cfi")
-    process.pfBadCandAnalyzer = process.pfcandAnalyzer.clone(pfCandidateLabel = cms.InputTag("filteredParticleFlow","cleaned"))
-    process.pfFilter = cms.Path(process.filteredParticleFlow + process.pfBadCandAnalyzer)
+  process.load("RecoHI.HiJetAlgos.HiBadParticleFilter_cfi")
+  process.pfBadCandAnalyzer = process.pfcandAnalyzer.clone(pfCandidateLabel=cms.InputTag("filteredParticleFlow", "cleaned"))
+  process.pfFilter = cms.Path(process.filteredParticleFlow + process.pfBadCandAnalyzer)
 
 #########################
 # Main analysis list
@@ -204,27 +203,25 @@ if cleanJets:
 #process.hltfilter.TriggerResultsTag = cms.InputTag("TriggerResults","","HLT")
 
 process.ana_step = cms.Path(
-    process.offlinePrimaryVerticesRecovery +
-    #process.HiForest +
-    process.hltanalysis +
-    ##process.hltobject +
-    process.l1object +
-    #process.centralityBin +
-    #process.hiEvtAnalyzer +
-    #process.jetSequence +
-    #process.hiPuRhoR3Analyzer + 
-    #process.correctedElectrons +
-    process.ggHiNtuplizer +
-    #process.ggHiNtuplizerGED +
-    #process.hiFJRhoAnalyzer +
-    #process.hiFJRhoAnalyzerFinerBins +
-    #process.pfcandAnalyzer +
-    #process.pfcandAnalyzerCS +
-    #process.trackSequencesPP +
-    process.zdcdigi +
-    process.QWzdcreco +
-    process.rechitanalyzerpp
-    )
+  process.offlinePrimaryVerticesRecovery +
+  #process.HiForest +
+  process.hltanalysis +
+  ##process.hltobject +
+  process.l1object +
+  #process.centralityBin +
+  #process.hiEvtAnalyzer +
+  #process.jetSequence +
+  #process.hiPuRhoR3Analyzer +
+  #process.correctedElectrons +
+  process.ggHiNtuplizer +
+  #process.ggHiNtuplizerGED +
+  #process.hiFJRhoAnalyzer +
+  #process.hiFJRhoAnalyzerFinerBins +
+  #process.pfcandAnalyzer +
+  #process.pfcandAnalyzerCS +
+  #process.trackSequencesPP +
+  process.zdcdigi + process.QWzdcreco + process.rechitanalyzerpp
+)
 
 # # edm output for debugging purposes
 # process.output = cms.OutputModule(
@@ -286,13 +283,14 @@ process.HBHEIsoNoiseFilterResult = cms.Path(process.fHBHEIsoNoiseFilterResult)
 process.pAna = cms.EndPath(process.skimanalysis)
 '''
 from HLTrigger.Configuration.CustomConfigs import MassReplaceInputTag
-process = MassReplaceInputTag(process,"offlinePrimaryVertices","offlinePrimaryVerticesRecovery")
+
+process = MassReplaceInputTag(process, "offlinePrimaryVertices", "offlinePrimaryVerticesRecovery")
 process.offlinePrimaryVerticesRecovery.oldVertexLabel = "offlinePrimaryVertices"
 
 if cleanJets == True:
-    from HLTrigger.Configuration.CustomConfigs import MassReplaceInputTag
-    process = MassReplaceInputTag(process,"particleFlow","filteredParticleFlow")                                                                                                               
-    process.filteredParticleFlow.PFCandidates  = "particleFlow"
+  from HLTrigger.Configuration.CustomConfigs import MassReplaceInputTag
+  process = MassReplaceInputTag(process, "particleFlow", "filteredParticleFlow")
+  process.filteredParticleFlow.PFCandidates = "particleFlow"
 
 ###############################################################################
 

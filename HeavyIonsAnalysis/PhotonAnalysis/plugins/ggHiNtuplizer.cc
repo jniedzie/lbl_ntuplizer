@@ -58,7 +58,11 @@ ggHiNtuplizer::ggHiNtuplizer(const edm::ParameterSet& ps)
     eeReducedRecHitCollection_ = consumes<EcalRecHitCollection>(ps.getParameter<edm::InputTag>("eeReducedRecHitCollection"));
     esReducedRecHitCollection_ = consumes<EcalRecHitCollection>(ps.getParameter<edm::InputTag>("esReducedRecHitCollection"));
   }
-  if (doMuons_) recoMuonsCollection_ = consumes<edm::View<reco::Muon>>(ps.getParameter<edm::InputTag>("recoMuonSrc"));
+  if (doMuons_) {
+    recoMuonsCollection_ = consumes<edm::View<reco::Muon>>(ps.getParameter<edm::InputTag>("recoMuonSrc"));
+    standaloneMuonsCollection_ = consumes<edm::View<reco::Track>>(ps.getParameter<edm::InputTag>("standaloneMuonSrc"));
+
+  }
   vtxCollection_ = consumes<std::vector<reco::Vertex>>(ps.getParameter<edm::InputTag>("VtxLabel"));
   doEleEReg_ = ps.getParameter<bool>("doEleERegression");
   if (useValMapIso_) {
@@ -576,6 +580,14 @@ ggHiNtuplizer::ggHiNtuplizer(const edm::ParameterSet& ps)
     tree_->Branch("muIDGlobalHighPt", &muIDGlobalHighPt_);
     tree_->Branch("muIDTrkHighPt", &muIDTrkHighPt_);
     tree_->Branch("muIDInTime", &muIDInTime_);
+
+    tree_->Branch("nMuStandalone", &nMuStandalone_);
+    tree_->Branch("muStandalonePt", &muStandalonePt_);
+    tree_->Branch("muStandaloneEta", &muStandaloneEta_);
+    tree_->Branch("muStandalonePhi", &muStandalonePhi_);
+    tree_->Branch("muStandaloneCharge", &muStandaloneCharge_);
+    tree_->Branch("muStandaloneType", &muStandaloneType_);
+    tree_->Branch("muStandaloneIsGood", &muStandaloneIsGood_);
   }
   if (doGeneralTracks_) {
     tree_->Branch("nTrk", &nTrk_);
@@ -1081,6 +1093,14 @@ void ggHiNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
     muIDGlobalHighPt_.clear();
     muIDTrkHighPt_.clear();
     muIDInTime_.clear();
+
+    nMuStandalone_ = 0;
+    muStandalonePt_.clear();
+    muStandaloneEta_.clear();
+    muStandalonePhi_.clear();
+    muStandaloneCharge_.clear();
+    muStandaloneType_.clear();
+    muStandaloneIsGood_.clear();
   }
 
   if (doGeneralTracks_) {
@@ -1192,7 +1212,10 @@ void ggHiNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   if (doSuperClusters_) fillSC(e);
   if (doElectrons_) fillElectrons(e, es, pv);
   if (doPhotons_) fillPhotons(e, es, pv);
-  if (doMuons_) fillMuons(e, es, pv);
+  if (doMuons_) {
+    fillMuons(e, es, pv);
+    fillStandaloneMuons(e, es, pv);
+  }
   if (doGeneralTracks_) fillGeneralTracks(e, es, pv);
   if (doPixelTracks_) fillPixelTracks(e, es, pv);
   if (doCaloTower_) fillCaloTower(e, es, pv);
@@ -2174,6 +2197,22 @@ void ggHiNtuplizer::fillMuons(const edm::Event& e, const edm::EventSetup& es, re
 
     nMu_++;
   }  // muons loop
+}
+
+void ggHiNtuplizer::fillStandaloneMuons(const edm::Event& e, const edm::EventSetup& es, reco::Vertex& pv) {
+  // Fills tree branches with standalone muons.
+
+  edm::Handle<edm::View<reco::Track>> standaloneMuonsHandle;
+  e.getByToken(standaloneMuonsCollection_, standaloneMuonsHandle);
+
+  for (const auto& mu : *standaloneMuonsHandle) {
+    muStandalonePt_.push_back(mu.pt());
+    muStandaloneEta_.push_back(mu.eta());
+    muStandalonePhi_.push_back(mu.phi());
+    muStandaloneCharge_.push_back(mu.charge());
+
+    nMuStandalone_++;
+  }
 }
 
 void ggHiNtuplizer::fillGeneralTracks(const edm::Event& e, const edm::EventSetup& es, reco::Vertex& pv) {
