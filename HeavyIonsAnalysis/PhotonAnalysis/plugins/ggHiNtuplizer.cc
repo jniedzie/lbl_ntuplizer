@@ -63,6 +63,7 @@ ggHiNtuplizer::ggHiNtuplizer(const edm::ParameterSet& ps)
     standaloneMuonsCollection_ = consumes<edm::View<reco::Track>>(ps.getParameter<edm::InputTag>("standaloneMuonSrc"));
 
   }
+  beamHaloSummaryToken_ = consumes<reco::BeamHaloSummary>(ps.getParameter<edm::InputTag>("beamHaloSummary"));
   vtxCollection_ = consumes<std::vector<reco::Vertex>>(ps.getParameter<edm::InputTag>("VtxLabel"));
   doEleEReg_ = ps.getParameter<bool>("doEleERegression");
   if (useValMapIso_) {
@@ -116,6 +117,10 @@ ggHiNtuplizer::ggHiNtuplizer(const edm::ParameterSet& ps)
   tree_->Branch("event", &event_);
   tree_->Branch("lumis", &lumis_);
   tree_->Branch("isData", &isData_);
+  tree_->Branch("beamHaloLoose", &beamHaloLoose_);
+  tree_->Branch("beamHaloTight", &beamHaloTight_);
+  tree_->Branch("beamHaloGlobalTight2016", &beamHaloGlobalTight2016_);
+  tree_->Branch("beamHaloGlobalSuperTight2016", &beamHaloGlobalSuperTight2016_);
   if (doEffectiveAreas_) {
     tree_->Branch("rho", &rho_);
   }
@@ -1168,6 +1173,18 @@ void ggHiNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   event_ = e.id().event();
   lumis_ = e.luminosityBlock();
   isData_ = e.isRealData();
+  beamHaloLoose_ = false;
+  beamHaloTight_ = false;
+  beamHaloGlobalTight2016_ = false;
+  beamHaloGlobalSuperTight2016_ = false;
+
+  edm::Handle<reco::BeamHaloSummary> beamHaloSummary;
+  if (e.getByToken(beamHaloSummaryToken_, beamHaloSummary)) {
+    beamHaloLoose_ = beamHaloSummary->LooseId();
+    beamHaloTight_ = beamHaloSummary->TightId();
+    beamHaloGlobalTight2016_ = beamHaloSummary->GlobalTightHaloId2016();
+    beamHaloGlobalSuperTight2016_ = beamHaloSummary->GlobalSuperTightHaloId2016();
+  }
 
   rho_ = -1;
   edm::Handle<double> rhoH;

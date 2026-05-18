@@ -15,6 +15,7 @@
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/METReco/interface/BeamHaloSummary.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
@@ -100,6 +101,7 @@ class ggHiNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
   edm::EDGetTokenT<reco::ConversionCollection> conversionsToken_;
   edm::EDGetTokenT<edm::View<reco::PFCandidate>> pfCollection_;
+  edm::EDGetTokenT<reco::BeamHaloSummary> beamHaloSummaryToken_;
 
   edm::EDGetToken particleBasedIsolationPhoton_;
   edm::EDGetTokenT<EcalRecHitCollection> ebReducedRecHitCollection_;
@@ -128,6 +130,10 @@ class ggHiNtuplizer : public edm::EDAnalyzer {
   ULong64_t event_;
   UInt_t lumis_;
   Bool_t isData_;
+  Bool_t beamHaloLoose_;
+  Bool_t beamHaloTight_;
+  Bool_t beamHaloGlobalTight2016_;
+  Bool_t beamHaloGlobalSuperTight2016_;
   Float_t rho_;
 
   // PileupSummaryInfo
