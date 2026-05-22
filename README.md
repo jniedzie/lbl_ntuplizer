@@ -18,4 +18,11 @@ cd CMSSW_10_3_4/src/
 cmsenv
 scram b -j
 
+git clone git@github.com:jniedzie/lbl_ntuplizer.git .
+
+cd HeavyIonsAnalysis/JetAnalysis/python/jets
+./makeJetSequences.sh
+cd -
+
+scram b -j
 ```
