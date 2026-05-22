@@ -4,6 +4,22 @@
 
 !HeavyIonsAnalysis/
 !HeavyIonsAnalysis/**
+
+!HLTTrigger
+!HLTTrigger/**
+
+!RecoBTag
+!RecoBTag/**
+
+!RecoHI
+!RecoHI/**
+
+!RecoJets
+!RecoJets/**
+
+!RecoVertex
+!RecoVertex/**
+
 !.gitignore
 
 *.pyc
