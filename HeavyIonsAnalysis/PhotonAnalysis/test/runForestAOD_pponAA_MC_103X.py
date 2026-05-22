@@ -27,17 +27,7 @@ process.HiForest.HiForestVersion = cms.string(version)
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
     fileNames = cms.untracked.vstring(
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/511FD6FA-CB30-8647-A75F-62843D0C2582.root"
         "/store/himc/HINPbPbAutumn18DR/LbyLSignal_5p02TeV_SuperChic/AODSIM/NoPUlowPtPhotonReg_LbyL_103X_upgrade2018_realistic_HI_LowPtPhotonReg_v2-v3/100000/9FEE123D-3E00-3C45-9F1F-1276180C6ABD.root"
-        #"/store/group/phys_diffraction/lbyl_2018/mc_flat_pt_photon/reco_lbl_modifier/flatpt_photon/reco_flat_pt_photon/190715_163552/0000/step3_RAW2DIGI_L1Reco_RECO_999.root"
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/wo_lbyl_reco/step3_RAW2DIGI_L1Reco_RECO_qed.root"
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/step3_RAW2DIGI_L1Reco_RECO_qed.root"
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/wo_lbyl_reco/step3_RAW2DIGI_L1Reco_RECO_lbyl.root","file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/wo_lbyl_reco/step3_RAW2DIGI_L1Reco_RECO_lbyl_v2.root"
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/step3_RAW2DIGI_L1Reco_RECO_lbyl.root","file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/step3_RAW2DIGI_L1Reco_RECO_lbyl_v2.root"
-        #"file:/afs/cern.ch/work/r/rchudasa/private/hiforest_1034/CMSSW_10_3_4/src/mc_reco/lbyl_sample/step3_RAW2DIGI_L1Reco_RECO_lbyl.root"
-        # "/store/group/phys_diffraction/lbyl_2018/mc_lbl/reco_1034/reco_1034_lbyl/reco_1034_lbyl/191110_150040/0000/step3_RAW2DIGI_L1Reco_RECO_lbyl_90.root"
-        #"/store/himc/HINPbPbAutumn18DR/QEDGammaGamma_5p02TeV_STARlight/AODSIM/NoPUlowPtPhotonReg_LbyL_103X_upgrade2018_realistic_HI_LowPtPhotonReg_v2-v5/270000/00F70C94-633E-EB45-807C-2FA338E5401F.root"
-        #"/eos/cms/store/himc/HINPbPbAutumn18DR/QEDGammaGamma_5p02TeV_STARlight/AODSIM/NoPUlowPtPhotonReg_LbyL_103X_upgrade2018_realistic_HI_LowPtPhotonReg_v2-v2/230000/FF0F2669-7BED-F845-8508-FE6582191483.root"
         ),
     )
 

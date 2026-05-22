@@ -26,7 +26,6 @@ config.Data.runRange = '326381-327564'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
 
-# config.Data.outLFNDirBase = '/store/cmst3/group/lightbylight/tea_samples/collisionDataNewNtuples/initial_noTrigger_badNames/'
 config.Data.outLFNDirBase = '/store/group/phys_diffraction/lbyl_2018/HIForward/ntuples_standaloneMuons_haloFlags/'
 config.Data.allowNonValidInputDataset = True
 config.Data.publication = False
